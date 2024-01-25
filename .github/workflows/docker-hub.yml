@@ -2,6 +2,8 @@ name: Docker-Image-Dev
 on: 
   push:
     branches: [ main ]
+    tags:
+      - 'v*'
 
 jobs:
   push:
@@ -24,7 +26,10 @@ jobs:
             ${{ github.repository }}
           # generate Docker tags based on the following events/attributes
           tags: |
-            type=raw,value=latest
+            # set latest tag for default branch
+            type=raw,value=latest,enable={{is_default_branch}}
+            # tag event
+            type=ref,enable=true,priority=600,prefix=,suffix=,event=tag
           # always generate latest tag on push
 
       - name: Build and push to DockerHub
